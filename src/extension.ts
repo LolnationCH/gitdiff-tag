@@ -40,6 +40,12 @@ export function activate(context: vscode.ExtensionContext) {
   });
   context.subscriptions.push(disposable);
 
+
+  disposable = vscode.commands.registerCommand('gitdiff-tag.toggleTree', () => {
+    treeDataProvider.toggleTree();
+  });
+  context.subscriptions.push(disposable);
+
   vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (editor) {
       treeDataProvider.refresh();
