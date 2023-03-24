@@ -41,6 +41,14 @@ function getUntrackedFiles() {
 
 export function getFiles() {
   return Promise.all([getDiffTrackedFiles(), getUntrackedFiles()]).then((files: any) => {
-    return files[0].concat(files[1]);
+    let totalFiles = files[0].concat(files[1]);
+    totalFiles = totalFiles.filter((file: string) => {
+      try {
+        return require('fs').existsSync(getRootPath() + '/' + file);
+      } catch (e) {
+        return false;
+      }
+    });
+    return totalFiles;
   });
 }

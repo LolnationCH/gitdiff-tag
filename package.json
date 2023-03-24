@@ -35,8 +35,8 @@
         "icon": "$(extensions-refresh)"
       },
       {
-        "command": "gitdiff-tag.switchTree",
-        "title": "gitdiff-tag: switch tree",
+        "command": "gitdiff-tag.toggleTree",
+        "title": "gitdiff-tag: Toggle tree",
         "icon": "$(testing-show-as-list-icon)"
       }
     ],
@@ -59,7 +59,7 @@
           "when": "false"
         },
         {
-          "command": "gitdiff-tag.switchTree",
+          "command": "gitdiff-tag.toggleTree",
           "when": "false"
         }
       ],
@@ -69,6 +69,12 @@
           "when": "view == gitdiff-tag",
           "group": "navigation",
           "icon": "$(extensions-refresh)"
+        },
+        {
+          "command": "gitdiff-tag.toggleTree",
+          "when": "view == gitdiff-tag",
+          "group": "navigation",
+          "icon": "$(testing-show-as-list-icon)"
         }
       ]
     }

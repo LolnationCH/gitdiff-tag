@@ -9,3 +9,22 @@ export function getRootPath() {
 export function getFileAbosolutePath(file: string) {
   return path.join(getRootPath(), file);
 }
+
+export function treeFromFilesArray(files: Array<string>) {
+  const tree = {};
+  files.forEach(file => {
+    const parts = file.split(path.sep);
+    let node: any = tree;
+    parts.forEach((part, index) => {
+      if (index === parts.length - 1) {
+        node[part] = { fullPath: file };
+      } else {
+        if (!node[part]) {
+          node[part] = {};
+        }
+        node = node[part];
+      }
+    });
+  });
+  return tree;
+}
