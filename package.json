@@ -1,7 +1,7 @@
 {
   "name": "gitdiff-tag",
   "displayName": "gitdiff-tag",
-  "description": "",
+  "description": "Shows all files changed since the last tag accesible in the current branch",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.76.0"
