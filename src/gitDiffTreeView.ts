@@ -5,40 +5,25 @@ import { getFiles } from './git-extension';
 import { GitDiffTreeItem } from './gitDiffTreeItem';
 import { treeFromFilesArray } from './utils';
 
-function getGitDiffList() {
-  return getFiles().then((files: any) => {
-    return files.map((file: string) => {
-      const fileName = file.split('/').pop();
-      if (fileName) { return new GitDiffTreeItem(fileName, file); }
-      else { return new GitDiffTreeItem(file, file); }
-    });
-  });
-}
-
-function getGitDiffTree() {
-  return getFiles().then((files: any) => {
-    var tree = treeFromFilesArray(files);
-    return Object.keys(tree).map((key: string) => {
-      const child = tree[key as keyof Object] as any;
-      if (typeof child === "object" && child.hasOwnProperty("fullPath")) {
-        return new GitDiffTreeItem(key, child.fullPath);
-      }
-      return new GitDiffTreeItem(key, "", tree[key as keyof Object], vscode.TreeItemCollapsibleState.Collapsed);
-    });
-  });
-}
-
 export class GitDiffTreeView implements vscode.TreeDataProvider<GitDiffTreeItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<GitDiffTreeItem | undefined> = new vscode.EventEmitter<GitDiffTreeItem | undefined>();
   readonly onDidChangeTreeData: vscode.Event<GitDiffTreeItem | undefined> = this._onDidChangeTreeData.event;
 
   private isTreeView: boolean = false;
+  private _files: Array<string> = [];
 
   constructor(private context: vscode.ExtensionContext) {
   }
 
   refresh(): void {
     this._onDidChangeTreeData.fire(undefined);
+  }
+
+  refreshData() {
+    getFiles().then((files: any) => {
+      this._files = files;
+      this.refresh();
+    });
   }
 
   getTreeItem(element: GitDiffTreeItem): vscode.TreeItem {
@@ -50,12 +35,31 @@ export class GitDiffTreeView implements vscode.TreeDataProvider<GitDiffTreeItem>
     this.refresh();
   }
 
+  getGitDiffList() {
+    return this._files.map((file: string) => {
+      const fileName = file.split('/').pop();
+      if (fileName) { return new GitDiffTreeItem(fileName, file); }
+      else { return new GitDiffTreeItem(file, file); }
+    });
+  }
+
+  getGitDiffTree() {
+    var tree = treeFromFilesArray(this._files);
+    return Object.keys(tree).map((key: string) => {
+      const child = tree[key as keyof Object] as any;
+      if (typeof child === "object" && child.hasOwnProperty("fullPath")) {
+        return new GitDiffTreeItem(key, child.fullPath);
+      }
+      return new GitDiffTreeItem(key, "", tree[key as keyof Object], vscode.TreeItemCollapsibleState.Collapsed);
+    });
+  }
+
   getGitDiffTreeItem() {
     if (this.isTreeView) {
-      return getGitDiffTree();
+      return this.getGitDiffTree();
     }
     else {
-      return getGitDiffList();
+      return this.getGitDiffList();
     }
   }
 

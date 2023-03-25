@@ -13,7 +13,12 @@ export function getFileAbosolutePath(file: string) {
 export function treeFromFilesArray(files: Array<string>) {
   const tree = {};
   files.forEach(file => {
-    const parts = file.split(path.sep);
+    let parts = file.split(path.sep);
+
+    if (parts.length === 1) {
+      parts = file.split('/');
+    }
+
     let node: any = tree;
     parts.forEach((part, index) => {
       if (index === parts.length - 1) {

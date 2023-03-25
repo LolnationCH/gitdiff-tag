@@ -2,13 +2,14 @@
   "name": "gitdiff-tag",
   "displayName": "gitdiff-tag",
   "description": "Shows all files changed since the last tag accesible in the current branch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/LolnationCH/gitdiff-tag"
   },
   "author": "LolnationCH",
+  "publisher": "LolnationCH",
   "engines": {
     "vscode": "^1.76.0"
   },

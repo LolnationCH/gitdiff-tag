@@ -19,10 +19,11 @@ export function activate(context: vscode.ExtensionContext) {
   // Register the tree view
   let treeDataProvider = new GitDiffTreeView(context);
   vscode.window.registerTreeDataProvider('gitdiff-tag', treeDataProvider);
+  treeDataProvider.refreshData();
 
   // Command that refreshes the tree view
   disposable = vscode.commands.registerCommand('gitdiff-tag.refresh', () => {
-    treeDataProvider.refresh();
+    treeDataProvider.refreshData();
   });
   context.subscriptions.push(disposable);
 
@@ -48,7 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (editor) {
-      treeDataProvider.refresh();
+      treeDataProvider.refreshData();
     }
   });
 }
