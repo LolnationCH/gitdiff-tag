@@ -1,4 +1,5 @@
 import * as cp from 'child_process';
+import path = require('path');
 import { getRootPath } from './utils';
 
 function getTag() {
@@ -44,7 +45,7 @@ export function getFiles() {
     let totalFiles = files[0].concat(files[1]);
     totalFiles = totalFiles.filter((file: string) => {
       try {
-        return require('fs').existsSync(getRootPath() + '/' + file);
+        return require('fs').existsSync(path.join(getRootPath(), file));
       } catch (e) {
         return false;
       }
