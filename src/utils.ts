@@ -1,7 +1,6 @@
 import path = require('path');
 import * as vscode from 'vscode';
 import { getFileContentFromTag, getTag } from './git-extension';
-import * as fs from 'fs';
 
 export function getRootPath() {
   if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) { return vscode.workspace.workspaceFolders[0].uri.fsPath; }
@@ -43,8 +42,10 @@ export function treeFromFilesArray(files: Array<string>) {
 export function downloadFileOfTag(file: string): Promise<(string | vscode.Uri)[] | void> {
   return getTag().then((tag) => {
     return getFileContentFromTag(tag, file).then((content) => {
-      return vscode.workspace.openTextDocument({ content }).then((doc) => {
-        return [doc.uri, tag];
+      return getLanguageIdentifierBasedOnExtension(file).then((lang) => {
+        return vscode.workspace.openTextDocument({ language: lang, content }).then((doc) => {
+          return [doc.uri, tag];
+        });
       });
     });
   })
@@ -56,6 +57,15 @@ export function downloadFileOfTag(file: string): Promise<(string | vscode.Uri)[]
         vscode.window.showErrorMessage(`${err}`);
       }
     });
+}
+
+function getLanguageIdentifierBasedOnExtension(file: string) {
+  const extension = path.extname(file);
+  return vscode.languages.getLanguages().then((ls: string[]) => {
+    return ls.find(lang => vscode.extensions.all.some(ext => ext.packageJSON.contributes &&
+      ext.packageJSON.contributes.languages &&
+      ext.packageJSON.contributes.languages.find((l: any) => l.id === lang && l.extensions && l.extensions.includes(extension))));
+  });
 }
 
 export function getFilePathFromTreeItem(item: vscode.TreeItem | string): string {
