@@ -27,7 +27,8 @@ export function activate(context: vscode.ExtensionContext) {
         const tempFileUri = result ? result[0] as vscode.Uri : undefined;
         const tag = result ? result[1] as string : undefined;
         if (tempFileUri) {
-          vscode.commands.executeCommand("vscode.diff", vscode.Uri.file(fileFullPath), tempFileUri, `${fileLabel} (Working Tree) ↔ ${fileLabel} (Tag: ${tag})`);
+          vscode.commands.executeCommand("vscode.diff", vscode.Uri.file(getFileAbosolutePath(fileFullPath)), tempFileUri, `${fileLabel} (Working Tree) ↔ ${fileLabel} (Tag: ${tag})`)
+            .then(() => vscode.workspace.fs.delete(tempFileUri));
         }
       });
     }
