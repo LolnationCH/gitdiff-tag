@@ -1,5 +1,7 @@
 import path = require('path');
 import * as vscode from 'vscode';
+import { getFileContentFromTag, getTag } from './git-extension';
+import * as fs from 'fs';
 
 export function getRootPath() {
   if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) { return vscode.workspace.workspaceFolders[0].uri.fsPath; }
@@ -8,6 +10,10 @@ export function getRootPath() {
 
 export function getFileAbosolutePath(file: string) {
   return path.join(getRootPath(), file);
+}
+
+export function getFileRelativePath(file: string) {
+  return path.relative(getRootPath(), getFileAbosolutePath(file));
 }
 
 export function treeFromFilesArray(files: Array<string>) {
@@ -32,4 +38,36 @@ export function treeFromFilesArray(files: Array<string>) {
     });
   });
   return tree;
+}
+
+export function downloadFileOfTag(file: string): Promise<(string | vscode.Uri)[] | void> {
+  return getTag().then((tag) => {
+    return getFileContentFromTag(tag, file).then((content) => {
+      return vscode.workspace.openTextDocument({ content }).then((doc) => {
+        return [doc.uri, tag];
+      });
+    });
+  })
+    .catch(err => {
+      if (err.message.includes("exists on disk")) {
+        vscode.window.showWarningMessage(`File ${file} exists on disk, but not in the current tag.`);
+      }
+      else {
+        vscode.window.showErrorMessage(`${err}`);
+      }
+    });
+}
+
+export function getFilePathFromTreeItem(item: vscode.TreeItem | string): string {
+  if (item instanceof vscode.TreeItem) {
+    return item.description as string;
+  }
+  return item;
+}
+
+export function getFileLabelFromTreeItem(item: vscode.TreeItem | string): string {
+  if (item instanceof vscode.TreeItem) {
+    return item.label as string;
+  }
+  return item;
 }

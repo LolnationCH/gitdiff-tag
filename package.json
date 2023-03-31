@@ -22,7 +22,12 @@
     "commands": [
       {
         "command": "gitdiff-tag.openFile",
-        "title": "gitdiff-tag: open file",
+        "title": "Open file",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "gitdiff-tag.openChanges",
+        "title": "Open Changes",
         "icon": "$(go-to-file)"
       },
       {
@@ -56,6 +61,10 @@
           "when": "false"
         },
         {
+          "command": "gitdiff-tag.openChanges",
+          "when": "false"
+        },
+        {
           "command": "gitdiff-tag.refresh",
           "when": "false"
         },
@@ -76,6 +85,18 @@
           "when": "view == gitdiff-tag",
           "group": "navigation",
           "icon": "$(testing-show-as-list-icon)"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "gitdiff-tag.openFile",
+          "when": "view == gitdiff-tag",
+          "icon": "$(go-to-file)"
+        },
+        {
+          "command": "gitdiff-tag.openChanges",
+          "when": "view == gitdiff-tag",
+          "icon": "$(go-to-file)"
         }
       ]
     }

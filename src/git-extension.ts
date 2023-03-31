@@ -2,13 +2,13 @@ import * as cp from 'child_process';
 import path = require('path');
 import { getRootPath } from './utils';
 
-function getTag() {
+export function getTag() {
   return new Promise<string>((resolve, reject) => {
     cp.exec(`git describe --abbrev=0 --tags`, { cwd: getRootPath() }, (err, stdout, stderr) => {
       if (err) {
         reject(err);
       } else {
-        resolve(stdout);
+        resolve(stdout.replace('\r', '').replace('\n', ''));
       }
     });
   });
@@ -51,5 +51,17 @@ export function getFiles() {
       }
     });
     return totalFiles;
+  });
+}
+
+export function getFileContentFromTag(tag: string, fileName: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    cp.exec(`git show ${tag}:${fileName}`, { cwd: getRootPath() }, (err, stdout, stderr) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(stdout);
+      }
+    });
   });
 }
