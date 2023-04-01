@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import GitDiffTreeItem from "./gitDiffTreeItem";
+import GitDiffTreeItem from "./tree-stuff/GitDiffTreeItem";
 import {
   getFileAbosolutePath,
   getFileLabelFromTreeItem,

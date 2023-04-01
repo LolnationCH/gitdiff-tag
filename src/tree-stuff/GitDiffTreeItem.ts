@@ -34,6 +34,5 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
     });
   }
 
-
   contextValue = "file";
 }

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as commands from './commands';
-import GitDiffTreeView from './gitDiffTreeView';
+import GitDiffTreeView from './tree-stuff/GitDiffTreeView';
 
 export function activate(context: vscode.ExtensionContext) {
   // Register the tree view

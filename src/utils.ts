@@ -28,30 +28,6 @@ export function getFileRelativePath(file: string) {
   return path.relative(getRootPath(), getFileAbosolutePath(file));
 }
 
-export function treeFromFilesArray(files: Array<string>) {
-  const tree = {};
-  files.forEach(file => {
-    let parts = file.split(path.sep);
-
-    if (parts.length === 1) {
-      parts = file.split('/');
-    }
-
-    let node: any = tree;
-    parts.forEach((part, index) => {
-      if (index === parts.length - 1) {
-        node[part] = { fullPath: file };
-      } else {
-        if (!node[part]) {
-          node[part] = {};
-        }
-        node = node[part];
-      }
-    });
-  });
-  return tree;
-}
-
 export function clearCache() {
   const cacheUri = vscode.Uri.file(cacheDirectory);
   vscode.workspace.fs.delete(cacheUri, { recursive: true });
