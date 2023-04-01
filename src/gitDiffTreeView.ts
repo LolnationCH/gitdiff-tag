@@ -11,8 +11,11 @@ export default class GitDiffTreeView implements vscode.TreeDataProvider<GitDiffT
 
   private isTreeView: boolean = false;
   private _files: Array<string> = [];
+  private _context: vscode.ExtensionContext;
 
   constructor(private context: vscode.ExtensionContext) {
+    this._context = context;
+    this.isTreeView = context.workspaceState.get('isTreeView', false);
   }
 
   refresh(): void {
@@ -32,6 +35,7 @@ export default class GitDiffTreeView implements vscode.TreeDataProvider<GitDiffT
 
   toggleTree() {
     this.isTreeView = !this.isTreeView;
+    this._context.workspaceState.update('isTreeView', this.isTreeView);
     this.refresh();
   }
 
