@@ -12,8 +12,13 @@ This is useful to see what files have changed since the last release.
     * The panel can be move to the secondary side bar.
   * The panel can switch from list view to tree view.
 * Command to quickly open a file modified.
-  * The command is called "GitDiff: Open File".
-  * The command is available in the command palette.
+  * The command is called "GitDiff-tag: List Files changed since last tag", from the command palette.
+
+* In the panel, you can click on a file to open it.
+  * You can also right-click to open the context menu to access the command "Open File".
+  * You can also right-click to open the context menu to access the command "Open Changes", to open the diff comparing the current file and the tag file.
+  * You can also right-click to open the context menu to access the command "View file at tag state", to view the file at the state of the tag.
+
 
 ## Requirements
 
