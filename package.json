@@ -2,7 +2,7 @@
   "name": "gitdiff-tag",
   "displayName": "gitdiff-tag",
   "description": "Shows all files changed since the last tag accesible in the current branch",
-  "version": "1.2.0",
+  "version": "1.5.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -31,18 +31,23 @@
         "icon": "$(go-to-file)"
       },
       {
+        "command": "gitdiff-tag.clearCache",
+        "title": "Clear Cache",
+        "icon": "$(notebook-delete-cell)"
+      },
+      {
         "command": "gitdiff-tag.listFiles",
         "title": "GitDiff-tag: List Files changed since last tag",
         "icon": "$(list-flat)"
       },
       {
         "command": "gitdiff-tag.refresh",
-        "title": "gitdiff-tag: refresh",
+        "title": "Refresh list of files modified",
         "icon": "$(extensions-refresh)"
       },
       {
         "command": "gitdiff-tag.toggleTree",
-        "title": "gitdiff-tag: Toggle tree",
+        "title": "Toggle tree",
         "icon": "$(testing-show-as-list-icon)"
       }
     ],
@@ -79,6 +84,12 @@
           "when": "view == gitdiff-tag",
           "group": "navigation",
           "icon": "$(extensions-refresh)"
+        },
+        {
+          "command": "gitdiff-tag.clearCache",
+          "when": "view == gitdiff-tag",
+          "group": "navigation",
+          "icon": "$(notebook-delete-cell)"
         },
         {
           "command": "gitdiff-tag.toggleTree",
