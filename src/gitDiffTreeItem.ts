@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-export class GitDiffTreeItem extends vscode.TreeItem {
+export default class GitDiffTreeItem extends vscode.TreeItem {
 
   command?: vscode.Command = { command: "gitdiff-tag.openFile", title: "Open File", arguments: [this.description] };
 
