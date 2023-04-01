@@ -16,6 +16,7 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
     description = description;
     this.tooltip = "Open File";
     this._children = children;
+    this.resourceUri = vscode.Uri.file(this.label); // We need to set this so that the icon for the file is displayed
   }
 
   getChildren(): any[] {
