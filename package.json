@@ -31,6 +31,11 @@
         "icon": "$(go-to-file)"
       },
       {
+        "command": "gitdiff-tag.viewTagFile",
+        "title": "View file at tag state",
+        "icon": "$(go-to-file)"
+      },
+      {
         "command": "gitdiff-tag.clearCache",
         "title": "Clear Cache",
         "icon": "$(notebook-delete-cell)"
@@ -102,12 +107,17 @@
         {
           "command": "gitdiff-tag.openFile",
           "when": "view == gitdiff-tag",
-          "icon": "$(go-to-file)"
+          "group": "navigation"
         },
         {
           "command": "gitdiff-tag.openChanges",
           "when": "view == gitdiff-tag",
-          "icon": "$(go-to-file)"
+          "group": "3_compare"
+        },
+        {
+          "command": "gitdiff-tag.viewTagFile",
+          "when": "view == gitdiff-tag",
+          "group": "3_compare"
         }
       ]
     }

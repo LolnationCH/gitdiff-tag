@@ -2,10 +2,10 @@ import * as vscode from 'vscode';
 
 import { getFiles } from './git-extension';
 
-import { GitDiffTreeItem } from './gitDiffTreeItem';
+import GitDiffTreeItem from './gitDiffTreeItem';
 import { treeFromFilesArray } from './utils';
 
-export class GitDiffTreeView implements vscode.TreeDataProvider<GitDiffTreeItem> {
+export default class GitDiffTreeView implements vscode.TreeDataProvider<GitDiffTreeItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<GitDiffTreeItem | undefined> = new vscode.EventEmitter<GitDiffTreeItem | undefined>();
   readonly onDidChangeTreeData: vscode.Event<GitDiffTreeItem | undefined> = this._onDidChangeTreeData.event;
 

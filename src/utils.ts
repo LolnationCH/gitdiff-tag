@@ -3,6 +3,11 @@ import * as vscode from 'vscode';
 import { getFileContentFromTag, getTag } from './git-extension';
 import { TextEncoder } from 'util';
 
+export interface UriNTag {
+  tag: string;
+  uri: vscode.Uri;
+}
+
 
 export function getRootPath() {
   if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) { return vscode.workspace.workspaceFolders[0].uri.fsPath; }
@@ -52,45 +57,42 @@ export function clearCache() {
   vscode.workspace.fs.delete(cacheUri, { recursive: true });
 }
 
-export function downloadFileOfTag(file: string): Promise<(string | vscode.Uri)[] | void> {
+export function openCacheFile(filePath: string) {
+  getTempFileUriAndTag(filePath).then((uriTag) => {
+    if (uriTag) { vscode.window.showTextDocument(uriTag.uri); }
+  });
+}
+
+/**
+ * Get the file uri and the tag of the file in the cache
+ * @param file The file path absolute
+ * @returns The uri of the file in the cache and the tag. If the file does not exist in the cache, it will be downloaded.
+ */
+export function getTempFileUriAndTag(file: string): Promise<UriNTag | void> {
   return getTag().then((tag) => {
-    const tempUri = vscode.Uri.file(`${cacheDirectory}/${tag}/${file}`);
-    return fileExist(tempUri).then((fileExist) => {
+    const uriNTag = { uri: vscode.Uri.file(`${cacheDirectory}/${tag}/${file}`), tag };
+    return fileExist(uriNTag.uri).then((fileExist) => {
       if (fileExist) {
-        return [tempUri, tag];
+        return uriNTag;
       }
 
-      return getFileContentFromTag(tag, file).then((content) => {
-        return getLanguageIdentifierBasedOnExtension(file).then((lang) => {
-          return vscode.workspace.fs.writeFile(tempUri, new TextEncoder().encode(content)).then(() => {
-            return [tempUri, tag];
+      return getFileContentFromTag(uriNTag.tag, file)
+        .then((content) => {
+          return vscode.workspace.fs.writeFile(uriNTag.uri, new TextEncoder().encode(content)).then(() => {
+            return uriNTag;
           }, (err) => {
             vscode.window.showErrorMessage(`Could not create temporary file : ${err}`);
           });
+        })
+        .catch(err => {
+          if (err.message.includes("exists on disk")) {
+            vscode.window.showWarningMessage(`File ${file} exists on disk, but not in the current tag.`);
+          }
+          else {
+            vscode.window.showErrorMessage(`${err}`);
+          }
         });
-      });
     });
-  })
-    .catch(err => {
-      if (err.message.includes("exists on disk")) {
-        vscode.window.showWarningMessage(`File ${file} exists on disk, but not in the current tag.`);
-      }
-      else {
-        vscode.window.showErrorMessage(`${err}`);
-      }
-    });
-}
-
-function getLanguageIdentifierBasedOnExtension(file: string) {
-  const extension = path.extname(file).replace(".", "");
-  return vscode.languages.getLanguages().then((ls: string[]) => {
-    if (ls.find(lang => lang.includes(extension))) {
-      return extension;
-    }
-
-    return ls.find(lang => vscode.extensions.all.some(ext => ext.packageJSON.contributes &&
-      ext.packageJSON.contributes.languages &&
-      ext.packageJSON.contributes.languages.find((l: any) => l.id === lang && l.extensions && l.extensions.includes(extension))));
   });
 }
 
