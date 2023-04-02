@@ -9,12 +9,26 @@ interface UriNTag {
   uri: vscode.Uri;
 }
 
+/**
+ * This class is a wrapper for the cache directory.
+ * It contains all the functions to interact with the cache directory.
+ * @export
+ * @abstract
+ * @class CacheUtils
+ * @example
+ * // returns
+ * // "mnt/c/program/.git/tmp"
+ * CacheUtils.cacheDirectory;
+ * @example
+ * // returns
+ * // "mnt/c/program/.git/tmp/1234567890/file1" as a vscode.Uri
+ * CacheUtils.getUriForCacheFile("file1", "1234567890" /* tag *\/);
+ */
 export default abstract class CacheUtils {
   private static cacheDirectory = getRootPath() + "/.git/tmp";
 
   public static clearCache() {
-    const cacheUri = vscode.Uri.file(this.cacheDirectory);
-    vscode.workspace.fs.delete(cacheUri, { recursive: true });
+    vscode.workspace.fs.delete(vscode.Uri.file(this.cacheDirectory), { recursive: true });
   }
 
   public static openCacheFile(filePath: string) {
