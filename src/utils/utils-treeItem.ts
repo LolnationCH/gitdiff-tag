@@ -1,5 +1,5 @@
 import path = require("path");
-import GitDiffTreeItem from "./GitDiffTreeItem";
+import GitDiffTreeItem from "../tree-stuff/GitDiffTreeItem";
 import { TreeItemCollapsibleState } from "vscode";
 
 function getGitDiffList(files: string[]) {

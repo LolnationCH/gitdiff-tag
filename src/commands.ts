@@ -2,13 +2,12 @@ import * as vscode from 'vscode';
 
 import GitDiffTreeItem from "./tree-stuff/GitDiffTreeItem";
 import {
-  getFileAbosolutePath,
   getFileLabelFromTreeItem,
-  getFilePathFromTreeItem,
-  getTempFileUriAndTag,
-  clearCache as _clearCache
-} from "./utils";
+  getFilePathFromTreeItem
+} from "./utils/utils";
 import { getFiles } from './git-extension';
+import CacheUtils from './utils/cache-utils';
+import { getFileAbosolutePath } from './utils/path-utils';
 
 
 export function openChanges(file: string | GitDiffTreeItem) {
@@ -16,7 +15,7 @@ export function openChanges(file: string | GitDiffTreeItem) {
   const fileLabel = getFileLabelFromTreeItem(file);
 
   if (fileFullPath !== "") {
-    getTempFileUriAndTag(fileFullPath).then((uriNTag) => {
+    CacheUtils.getFileUriAndTag(fileFullPath).then((uriNTag) => {
       if (uriNTag) {
         vscode.commands.executeCommand("vscode.diff",
           vscode.Uri.file(getFileAbosolutePath(fileFullPath)),
@@ -48,11 +47,11 @@ export function openFile(file: string | GitDiffTreeItem) {
 }
 
 export function clearCache() {
-  _clearCache();
+  CacheUtils.clearCache();
 }
 
 export function openCacheFile(file: string | GitDiffTreeItem) {
-  getTempFileUriAndTag(getFilePathFromTreeItem(file)).then((uriNTag) => {
+  CacheUtils.getFileUriAndTag(getFilePathFromTreeItem(file)).then((uriNTag) => {
     if (uriNTag) {
       vscode.window.showTextDocument(uriNTag.uri);
     }

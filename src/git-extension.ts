@@ -1,8 +1,8 @@
 import * as cp from 'child_process';
 import * as vscode from 'vscode';
-import path = require('path');
 
-import { getRootPath } from './utils';
+import GitCommands from './utils/GitCommands';
+import { resolveGetFiles } from './utils/git-utils';
 
 export function getTag(): Promise<string> {
   const tagFromConfig = vscode.workspace.getConfiguration('gitdiff-tag').get('useTag');
@@ -11,64 +11,60 @@ export function getTag(): Promise<string> {
   }
 
   return new Promise<string>((resolve, reject) => {
-    cp.exec(`git describe --abbrev=0 --tags`, { cwd: getRootPath() }, (err, stdout, stderr) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(stdout.replace('\r', '').replace('\n', ''));
-      }
-    });
-  });
-}
-
-function getDiffTrackedFiles() {
-  return new Promise((resolve, reject) => {
-    getTag().then((tag) => {
-      cp.exec(`git diff --name-only ${tag}`, { cwd: getRootPath() }, (err, stdout, stderr) => {
+    cp.exec(GitCommands.getTagCommand().command, GitCommands.getTagCommand().options,
+      (err, stdout, _) => {
         if (err) {
           reject(err);
         } else {
-          resolve(stdout.split('\n').filter((file: string) => file));
+          resolve(stdout.replace('\r', '').replace('\n', ''));
         }
       });
-    });
-  });
-}
-
-function getUntrackedFiles() {
-  return new Promise((resolve, reject) => {
-    cp.exec(`git ls-files --others --exclude-standard`, { cwd: getRootPath() }, (err, stdout, stderr) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(stdout.split('\n').filter((file: string) => file));
-      }
-    });
-  });
-}
-
-export function getFiles() {
-  return Promise.all([getDiffTrackedFiles(), getUntrackedFiles()]).then((files: any) => {
-    let totalFiles = files[0].concat(files[1]);
-    totalFiles = totalFiles.filter((file: string) => {
-      try {
-        return require('fs').existsSync(path.join(getRootPath(), file));
-      } catch (e) {
-        return false;
-      }
-    });
-    return totalFiles;
   });
 }
 
 export function getFileContentFromTag(tag: string, fileName: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    cp.exec(`git show ${tag}:${fileName}`, { cwd: getRootPath() }, (err, stdout, stderr) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(stdout);
-      }
+    cp.exec(GitCommands.getFileContentFromTagCommand(tag, fileName).command, GitCommands.getGenericOptions(),
+      (err, stdout, _) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(stdout);
+        }
+      });
+  });
+}
+
+function getDiffTrackedFiles(): Promise<string[]> {
+  return new Promise<string[]>((resolve, reject) => {
+    getTag().then((tag) => {
+      cp.exec(GitCommands.getDiffTrackedFilesCommand(tag).command, GitCommands.getGenericOptions(),
+        (err, stdout, _) => {
+          if (err) {
+            vscode.window.showErrorMessage(err.message);
+            reject([]);
+          } else {
+            resolve(stdout.split('\n').filter((file: string) => file));
+          }
+        });
     });
   });
+}
+
+function getUntrackedFiles(): Promise<string[]> {
+  return new Promise<string[]>((resolve, reject) => {
+    cp.exec(GitCommands.getUntrackedFilesCommand().command, GitCommands.getGenericOptions(),
+      (err, stdout, _) => {
+        if (err) {
+          vscode.window.showErrorMessage(err.message);
+          reject([]);
+        } else {
+          resolve(stdout.split('\n').filter((file: string) => file));
+        }
+      });
+  });
+}
+
+export function getFiles() {
+  return Promise.all([getDiffTrackedFiles(), getUntrackedFiles()]).then((files) => resolveGetFiles(files));
 }
