@@ -121,7 +121,19 @@
           "group": "3_compare"
         }
       ]
-    }
+    },
+    "configuration": [
+      {
+        "title": "gitdiff-tag",
+        "properties": {
+          "gitdiff-tag.useTag": {
+            "type": "string",
+            "default": null,
+            "description": "Tag to use when doing the comparaison. If not set, the last tag will be used."
+          }
+        }
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

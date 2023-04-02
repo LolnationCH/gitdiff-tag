@@ -1,8 +1,15 @@
 import * as cp from 'child_process';
+import * as vscode from 'vscode';
 import path = require('path');
+
 import { getRootPath } from './utils';
 
-export function getTag() {
+export function getTag(): Promise<string> {
+  const tagFromConfig = vscode.workspace.getConfiguration('gitdiff-tag').get('useTag');
+  if (tagFromConfig) {
+    return Promise.resolve(tagFromConfig as string);
+  }
+
   return new Promise<string>((resolve, reject) => {
     cp.exec(`git describe --abbrev=0 --tags`, { cwd: getRootPath() }, (err, stdout, stderr) => {
       if (err) {
