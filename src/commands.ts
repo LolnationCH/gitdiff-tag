@@ -1,22 +1,26 @@
 import * as vscode from 'vscode';
 
-import GitDiffTreeItem from "./gitDiffTreeItem";
+import GitDiffTreeItem from "./tree-stuff/GitDiffTreeItem";
 import {
-  getFileAbosolutePath,
   getFileLabelFromTreeItem,
-  getFilePathFromTreeItem,
-  getTempFileUriAndTag,
-  clearCache as _clearCache
-} from "./utils";
+  getFilePathFromTreeItem
+} from "./utils/utils";
 import { getFiles } from './git-extension';
+import CacheUtils from './utils/cache-utils';
+import { getFileAbosolutePath } from './utils/path-utils';
+import { getUsePreviewWhenOpeningFileFromConfiguration } from './utils/configuration-utils';
 
-
+/**
+ * This function opens the changes of a file in the diff editor.
+ * It will open the version of the file from the tag.
+ * @param file The file or the tree item to open the changes of
+ */
 export function openChanges(file: string | GitDiffTreeItem) {
   const fileFullPath = getFilePathFromTreeItem(file);
   const fileLabel = getFileLabelFromTreeItem(file);
 
   if (fileFullPath !== "") {
-    getTempFileUriAndTag(fileFullPath).then((uriNTag) => {
+    CacheUtils.getFileTagInformation(fileFullPath).then((uriNTag) => {
       if (uriNTag) {
         vscode.commands.executeCommand("vscode.diff",
           vscode.Uri.file(getFileAbosolutePath(fileFullPath)),
@@ -27,34 +31,45 @@ export function openChanges(file: string | GitDiffTreeItem) {
   }
 }
 
-export function listFiles() {
+/**
+ * This function makes a dropdown list of all the files with changes, so the user can select one to open.
+ */
+export function listFilesAndOpenSelected() {
   getFiles().then((files: any) => {
     vscode.window.showQuickPick(files).then((file) => {
       if (file) {
         vscode.workspace.openTextDocument(getFileAbosolutePath(file)).then((doc) => {
-          vscode.window.showTextDocument(doc);
+          vscode.window.showTextDocument(doc, { preview: getUsePreviewWhenOpeningFileFromConfiguration() });
         });
       }
     });
   });
 }
 
+/**
+ * Function to open a file.
+ * @param file The file or the tree item to open
+ */
 export function openFile(file: string | GitDiffTreeItem) {
   if (file) {
     vscode.workspace.openTextDocument(getFileAbosolutePath(getFilePathFromTreeItem(file))).then((doc) => {
-      vscode.window.showTextDocument(doc);
+      vscode.window.showTextDocument(doc, { preview: getUsePreviewWhenOpeningFileFromConfiguration() });
     });
   }
 }
 
-export function clearCache() {
-  _clearCache();
-}
-
+/**
+ * This function opens the cache version of a file. If the file does not exist in the cache, it will be downloaded.
+ * @param file The file or the tree item to open the cache version of
+ */
 export function openCacheFile(file: string | GitDiffTreeItem) {
-  getTempFileUriAndTag(getFilePathFromTreeItem(file)).then((uriNTag) => {
+  CacheUtils.getFileTagInformation(getFilePathFromTreeItem(file)).then((uriNTag) => {
     if (uriNTag) {
-      vscode.window.showTextDocument(uriNTag.uri);
+      vscode.window.showTextDocument(uriNTag.uri, { preview: getUsePreviewWhenOpeningFileFromConfiguration() });
     }
   });
+}
+
+export function clearCache() {
+  CacheUtils.clearCache();
 }
