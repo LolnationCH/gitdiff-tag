@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
+import { getFileAbosolutePath } from "../utils/path-utils";
 
 export default class GitDiffTreeItem extends vscode.TreeItem {
-
-  command?: vscode.Command = { command: "gitdiff-tag.openFile", title: "Open File", arguments: [this.description] };
-
   private _children: {} = {};
 
   constructor(
@@ -17,6 +15,11 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
     this.tooltip = "Open File";
     this._children = children;
     this.resourceUri = vscode.Uri.file(this.label); // We need to set this so that the icon for the file is displayed
+    this.command = {
+      command: "vscode.open",
+      title: "Open File",
+      arguments: [vscode.Uri.file(getFileAbosolutePath(this.description)), { preview: false }]
+    };
   }
 
   getChildren(): any[] {
