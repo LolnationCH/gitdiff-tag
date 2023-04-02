@@ -16,13 +16,23 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
     this.tooltip = "Open File";
     this._children = children;
     this.resourceUri = vscode.Uri.file(this.label); // We need to set this so that the icon for the file is displayed
-    this.command = {
-      command: "vscode.open",
-      title: "Open File",
-      arguments: [vscode.Uri.file(getFileAbosolutePath(this.description)), {
-        preview: getUsePreviewWhenOpeningFileFromConfiguration()
-      }]
-    };
+    if (this._isFile()) {
+      this.command = {
+        command: "vscode.open",
+        title: "Open File",
+        arguments: [vscode.Uri.file(getFileAbosolutePath(this.description)), {
+          preview: getUsePreviewWhenOpeningFileFromConfiguration()
+        }]
+      };
+      this.contextValue = "file";
+    }
+    else {
+      this.contextValue = "folder";
+    }
+  }
+
+  _isFile(): boolean {
+    return this.description !== "";
   }
 
   getChildren(): any[] {

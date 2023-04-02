@@ -20,7 +20,7 @@ export function openChanges(file: string | GitDiffTreeItem) {
   const fileLabel = getFileLabelFromTreeItem(file);
 
   if (fileFullPath !== "") {
-    CacheUtils.getFileUriAndTag(fileFullPath).then((uriNTag) => {
+    CacheUtils.getFileTagInformation(fileFullPath).then((uriNTag) => {
       if (uriNTag) {
         vscode.commands.executeCommand("vscode.diff",
           vscode.Uri.file(getFileAbosolutePath(fileFullPath)),
@@ -63,7 +63,7 @@ export function openFile(file: string | GitDiffTreeItem) {
  * @param file The file or the tree item to open the cache version of
  */
 export function openCacheFile(file: string | GitDiffTreeItem) {
-  CacheUtils.getFileUriAndTag(getFilePathFromTreeItem(file)).then((uriNTag) => {
+  CacheUtils.getFileTagInformation(getFilePathFromTreeItem(file)).then((uriNTag) => {
     if (uriNTag) {
       vscode.window.showTextDocument(uriNTag.uri, { preview: getUsePreviewWhenOpeningFileFromConfiguration() });
     }

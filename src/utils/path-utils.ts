@@ -24,6 +24,14 @@ export function doesFileExist(file: string) {
   }
 }
 
+export function doesUriExist(file: vscode.Uri) {
+  try {
+    return fs.existsSync(file.fsPath);
+  } catch (e) {
+    return false;
+  }
+}
+
 /**
  * This function returns the absolute path of the file. It uses the root path of the workspace as a base.
  * @param file The file to get the absolute path

@@ -107,17 +107,17 @@
       "view/item/context": [
         {
           "command": "gitdiff-tag.openFile",
-          "when": "view == gitdiff-tag",
+          "when": "view == gitdiff-tag && viewItem == file",
           "group": "navigation"
         },
         {
           "command": "gitdiff-tag.openChanges",
-          "when": "view == gitdiff-tag",
+          "when": "view == gitdiff-tag && viewItem == file",
           "group": "3_compare"
         },
         {
           "command": "gitdiff-tag.viewTagFile",
-          "when": "view == gitdiff-tag",
+          "when": "view == gitdiff-tag && viewItem == file",
           "group": "3_compare"
         }
       ]

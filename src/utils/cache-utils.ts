@@ -1,10 +1,9 @@
 import * as vscode from 'vscode';
-import { getRootPath } from './path-utils';
+import { getRootPath, doesUriExist } from './path-utils';
 import { getFileContentFromTag, getTag } from '../git-extension';
-import { doesFileExist } from './utils';
 import { TextEncoder } from 'util';
 
-interface UriNTag {
+interface FileTagInformation {
   tag: string;
   uri: vscode.Uri;
 }
@@ -32,7 +31,7 @@ export default abstract class CacheUtils {
   }
 
   public static openCacheFile(filePath: string) {
-    getTempFileUriAndTag(filePath).then((uriTag) => {
+    this.getFileTagInformation(filePath).then((uriTag) => {
       if (uriTag) { vscode.window.showTextDocument(uriTag.uri); }
     });
   }
@@ -41,40 +40,32 @@ export default abstract class CacheUtils {
     return vscode.Uri.file(`${this.cacheDirectory}/${tag}/${file}`);
   }
 
-  public static getFileUriAndTag(file: string) {
-    return getTempFileUriAndTag(file);
-  }
-}
-
-/**
- * Get the file uri and the tag of the file in the cache
- * @param file The file path absolute
- * @returns The uri of the file in the cache and the tag. If the file does not exist in the cache, it will be downloaded.
- */
-function getTempFileUriAndTag(file: string): Promise<UriNTag | void> {
-  return getTag().then((tag) => {
-    const uriNTag = { uri: CacheUtils.getUriForCacheFile(file, tag), tag };
-    return doesFileExist(uriNTag.uri).then((fileExist) => {
-      if (fileExist) {
+  public static getFileTagInformation(file: string): Promise<FileTagInformation | void> {
+    return getTag().then((tag) => {
+      const uriNTag = { uri: CacheUtils.getUriForCacheFile(file, tag), tag };
+      if (doesUriExist(uriNTag.uri)) {
         return uriNTag;
       }
 
-      return getFileContentFromTag(uriNTag.tag, file)
-        .then((content) => {
-          return vscode.workspace.fs.writeFile(uriNTag.uri, new TextEncoder().encode(content)).then(() => {
-            return uriNTag;
-          }, (err) => {
-            vscode.window.showErrorMessage(`Could not create temporary file : ${err}`);
-          });
+      return this.downloadFile(tag, file)
+        .then(() => {
+          return uriNTag;
         })
         .catch(err => {
           if (err.message.includes("exists on disk")) {
-            vscode.window.showWarningMessage(`File ${file} exists on disk, but not in the current tag.`);
+            vscode.window.showWarningMessage(`File ${file} exists on disk, but not in the current tag. This is generally due that it is a new file.`);
           }
           else {
             vscode.window.showErrorMessage(`${err}`);
           }
         });
     });
-  });
+  }
+
+  private static downloadFile(tag: string, file: string) {
+    return getFileContentFromTag(tag, file)
+      .then((content) => {
+        return vscode.workspace.fs.writeFile(CacheUtils.getUriForCacheFile(file, tag), new TextEncoder().encode(content));
+      });
+  }
 }
