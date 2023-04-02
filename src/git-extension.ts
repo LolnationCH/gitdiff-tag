@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 
 import GitCommands from './utils/GitCommands';
 import { getFlattenAndCheckIfFileExist } from './utils/git-utils';
+import { getTagToUseFromConfiguration } from './utils/configuration-utils';
 
 /**
  * This functions returns the tag to use. If the user has set a tag in the settings, it will be used.
@@ -10,7 +11,7 @@ import { getFlattenAndCheckIfFileExist } from './utils/git-utils';
  * @returns Promise<string> tag The tag to us
  */
 export function getTag(): Promise<string> {
-  const tagFromConfig = vscode.workspace.getConfiguration('gitdiff-tag').get('useTag');
+  const tagFromConfig = getTagToUseFromConfiguration();
   if (tagFromConfig) {
     return Promise.resolve(tagFromConfig as string);
   }

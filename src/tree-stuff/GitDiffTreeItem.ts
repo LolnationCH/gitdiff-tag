@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { getFileAbosolutePath } from "../utils/path-utils";
+import { getUsePreviewWhenOpeningFileFromConfiguration } from "../utils/configuration-utils";
 
 export default class GitDiffTreeItem extends vscode.TreeItem {
   private _children: {} = {};
@@ -18,7 +19,9 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
     this.command = {
       command: "vscode.open",
       title: "Open File",
-      arguments: [vscode.Uri.file(getFileAbosolutePath(this.description)), { preview: false }]
+      arguments: [vscode.Uri.file(getFileAbosolutePath(this.description)), {
+        preview: getUsePreviewWhenOpeningFileFromConfiguration()
+      }]
     };
   }
 

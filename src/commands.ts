@@ -8,6 +8,7 @@ import {
 import { getFiles } from './git-extension';
 import CacheUtils from './utils/cache-utils';
 import { getFileAbosolutePath } from './utils/path-utils';
+import { getUsePreviewWhenOpeningFileFromConfiguration } from './utils/configuration-utils';
 
 /**
  * This function opens the changes of a file in the diff editor.
@@ -38,7 +39,7 @@ export function listFilesAndOpenSelected() {
     vscode.window.showQuickPick(files).then((file) => {
       if (file) {
         vscode.workspace.openTextDocument(getFileAbosolutePath(file)).then((doc) => {
-          vscode.window.showTextDocument(doc);
+          vscode.window.showTextDocument(doc, { preview: getUsePreviewWhenOpeningFileFromConfiguration() });
         });
       }
     });
@@ -52,7 +53,7 @@ export function listFilesAndOpenSelected() {
 export function openFile(file: string | GitDiffTreeItem) {
   if (file) {
     vscode.workspace.openTextDocument(getFileAbosolutePath(getFilePathFromTreeItem(file))).then((doc) => {
-      vscode.window.showTextDocument(doc);
+      vscode.window.showTextDocument(doc, { preview: getUsePreviewWhenOpeningFileFromConfiguration() });
     });
   }
 }
@@ -64,7 +65,7 @@ export function openFile(file: string | GitDiffTreeItem) {
 export function openCacheFile(file: string | GitDiffTreeItem) {
   CacheUtils.getFileUriAndTag(getFilePathFromTreeItem(file)).then((uriNTag) => {
     if (uriNTag) {
-      vscode.window.showTextDocument(uriNTag.uri);
+      vscode.window.showTextDocument(uriNTag.uri, { preview: getUsePreviewWhenOpeningFileFromConfiguration() });
     }
   });
 }
