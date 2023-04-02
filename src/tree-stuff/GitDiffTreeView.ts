@@ -11,7 +11,7 @@ export default class GitDiffTreeView implements vscode.TreeDataProvider<GitDiffT
 
   private state: GitDiffTreeViewState;
 
-  constructor(private context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext) {
     this.state = new GitDiffTreeViewState(context);
   }
 
