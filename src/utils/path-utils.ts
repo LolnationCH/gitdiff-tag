@@ -61,3 +61,14 @@ export function getFileAbosolutePath(file: string) {
 export function getFileRelativePath(file: string) {
   return path.relative(getRootPath(), getFileAbosolutePath(file));
 }
+
+export function hideFolderInVscode(folder: string) {
+  const key = "**" + "/" + folder.replace(getRootPath(), "").replace("/", "");
+  var filesExcluded = vscode.workspace.getConfiguration('files').get('exclude') as { [key: string]: boolean } | undefined;
+  if (filesExcluded) {
+    if (!filesExcluded[key]) {
+      filesExcluded[key] = true;
+      vscode.workspace.getConfiguration('files').update('exclude', filesExcluded, vscode.ConfigurationTarget.Global);
+    }
+  }
+}

@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { getRootPath, doesUriExist } from './path-utils';
 import { getFileContentFromTag, getTag } from '../git-extension';
 import { TextEncoder } from 'util';
+import { createHidenFolder } from './utils';
 
 interface FileTagInformation {
   tag: string;
@@ -16,15 +17,15 @@ interface FileTagInformation {
  * @class CacheUtils
  * @example
  * // returns
- * // "mnt/c/program/.git/tmp"
+ * // "mnt/c/program/.cache-ext"
  * CacheUtils.cacheDirectory;
  * @example
  * // returns
- * // "mnt/c/program/.git/tmp/1234567890/file1" as a vscode.Uri
+ * // "mnt/c/program/.cache-ext/1234567890/file1" as a vscode.Uri
  * CacheUtils.getUriForCacheFile("file1", "1234567890" /* tag *\/);
  */
 export default abstract class CacheUtils {
-  private static cacheDirectory = getRootPath() + "/.git/tmp";
+  private static cacheDirectory = getRootPath() + "/.cache-ext";
 
   public static clearCache() {
     vscode.workspace.fs.delete(vscode.Uri.file(this.cacheDirectory), { recursive: true });
@@ -63,6 +64,8 @@ export default abstract class CacheUtils {
   }
 
   private static downloadFile(tag: string, file: string) {
+    createHidenFolder(this.cacheDirectory);
+
     return getFileContentFromTag(tag, file)
       .then((content) => {
         return vscode.workspace.fs.writeFile(CacheUtils.getUriForCacheFile(file, tag), new TextEncoder().encode(content));

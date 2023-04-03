@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import { hideFolderInVscode } from './path-utils';
 
 /**
  * This function is a wrapper to return if the file exists or not.
@@ -31,4 +33,16 @@ export function getFileLabelFromTreeItem(item: vscode.TreeItem | string): string
     return item.label as string;
   }
   return item;
+}
+
+export function createHidenFolder(folder: string) {
+  try {
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder);
+      hideFolderInVscode(folder);
+    }
+  }
+  catch (err) {
+    console.log("Could not set cache directory as hidden");
+  }
 }
