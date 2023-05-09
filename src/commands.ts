@@ -23,8 +23,8 @@ export function openChanges(file: string | GitDiffTreeItem) {
     CacheUtils.getFileTagInformation(fileFullPath).then((uriNTag) => {
       if (uriNTag) {
         vscode.commands.executeCommand("vscode.diff",
-          vscode.Uri.file(getFileAbosolutePath(fileFullPath)),
           uriNTag.uri,
+          vscode.Uri.file(getFileAbosolutePath(fileFullPath)),
           `${fileLabel} (Working Tree) ↔ ${fileLabel} (Tag: ${uriNTag.tag})`);
       }
     });

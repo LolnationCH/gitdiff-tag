@@ -2,7 +2,7 @@
   "name": "gitdiff-tag",
   "displayName": "gitdiff-tag",
   "description": "Shows all files changed since the last tag accesible in the current branch",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "license": "MIT",
   "repository": {
     "type": "git",
