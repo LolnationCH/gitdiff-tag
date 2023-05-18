@@ -1,52 +1,52 @@
 import * as vscode from "vscode";
-import { getFileAbosolutePath } from "../utils/path-utils";
+import { doesUriExist, getFileAbosolutePath } from "../utils/path-utils";
 import { getUsePreviewWhenOpeningFileFromConfiguration } from "../utils/configuration-utils";
+import { GitFile } from "../GitFile";
 
 export default class GitDiffTreeItem extends vscode.TreeItem {
   private _children: {} = {};
+  private _absolutePath: vscode.Uri;
 
   constructor(
-    public readonly label: string,
-    public readonly description: string,
+    public readonly gitFile: GitFile,
     public readonly children: {} = {},
     public readonly collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.None
   ) {
     super("label", collapsibleState);
-    description = description;
+    this.description = this.gitFile.path;
+    this.label = this.gitFile.getLabel();
     this.tooltip = "Open File";
     this._children = children;
-    this.resourceUri = vscode.Uri.file(this.label); // We need to set this so that the icon for the file is displayed
-    if (this._isFile()) {
+    this.resourceUri = vscode.Uri.file(this.gitFile.filename); // We need to set this so that the icon for the file is displayed
+    this._absolutePath = vscode.Uri.file(getFileAbosolutePath(this.gitFile.path));
+
+    if (this.gitFile.isFolder) {
+      this.contextValue = "folder";
+    }
+    else if (this.gitFile.exists) {
       this.command = {
         command: "vscode.open",
         title: "Open File",
-        arguments: [vscode.Uri.file(getFileAbosolutePath(this.description)), {
+        arguments: [this._absolutePath, {
           preview: getUsePreviewWhenOpeningFileFromConfiguration()
         }]
       };
       this.contextValue = "file";
     }
     else {
-      this.contextValue = "folder";
+      this.contextValue = "file_deleted";
     }
-  }
-
-  _isFile(): boolean {
-    return this.description !== "";
   }
 
   getChildren(): any[] {
     return Object.keys(this._children).map((key: any) => {
       const child = this._children[key as keyof Object] as any;
 
-      if (typeof child === "object" && child.hasOwnProperty("fullPath")) {
-        return new GitDiffTreeItem(key, child.fullPath);
-      }
-      else if (typeof child === "string") {
-        return new GitDiffTreeItem(key, child);
+      if (typeof child === "object" && child.hasOwnProperty("gitFile")) {
+        return new GitDiffTreeItem(child.gitFile);
       }
 
-      return new GitDiffTreeItem(key, "", child, vscode.TreeItemCollapsibleState.Collapsed);
+      return new GitDiffTreeItem(this.gitFile, child, vscode.TreeItemCollapsibleState.Collapsed);
     });
   }
 

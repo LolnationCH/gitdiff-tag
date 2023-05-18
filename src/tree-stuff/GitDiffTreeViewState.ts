@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { GitFile } from '../GitFile';
 
 /**
  * This class is used to store the state of the tree view.
@@ -8,7 +9,7 @@ import * as vscode from 'vscode';
  */
 export default class GitDiffTreeViewState {
   private _isTreeView: boolean;
-  private _files: Array<string> = [];
+  private _files: Array<GitFile> = [];
   private _context: vscode.ExtensionContext;
 
   constructor(context: vscode.ExtensionContext) {
@@ -25,11 +26,11 @@ export default class GitDiffTreeViewState {
     return this._isTreeView;
   }
 
-  get files(): Array<string> {
+  get files(): Array<GitFile> {
     return this._files;
   }
 
-  set files(value: Array<string>) {
+  set files(value: Array<GitFile>) {
     this._files = value;
   }
 }

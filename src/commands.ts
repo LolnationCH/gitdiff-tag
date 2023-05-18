@@ -9,6 +9,7 @@ import { getFiles } from './git-extension';
 import CacheUtils from './utils/cache-utils';
 import { getFileAbosolutePath } from './utils/path-utils';
 import { getUsePreviewWhenOpeningFileFromConfiguration } from './utils/configuration-utils';
+import { GitFile } from './GitFile';
 
 /**
  * This function opens the changes of a file in the diff editor.
@@ -35,8 +36,8 @@ export function openChanges(file: string | GitDiffTreeItem) {
  * This function makes a dropdown list of all the files with changes, so the user can select one to open.
  */
 export function listFilesAndOpenSelected() {
-  getFiles().then((files: any) => {
-    vscode.window.showQuickPick(files).then((file) => {
+  getFiles().then((files: GitFile[]) => {
+    vscode.window.showQuickPick(files.map((x) => (x.path))).then((file) => {
       if (file) {
         vscode.workspace.openTextDocument(getFileAbosolutePath(file)).then((doc) => {
           vscode.window.showTextDocument(doc, { preview: getUsePreviewWhenOpeningFileFromConfiguration() });
