@@ -16,7 +16,7 @@ export default abstract class GitCommands {
 
   static getDiffTrackedFilesCommand(tag: string): GitCommand {
     return {
-      command: `git diff --name-only ${tag}`,
+      command: `git diff --name-status ${tag}`,
       options: { cwd: getRootPath() },
     };
   }

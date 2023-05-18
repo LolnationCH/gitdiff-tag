@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
-import { getFileAbosolutePath } from "../utils/path-utils";
+import { doesUriExist, getFileAbosolutePath } from "../utils/path-utils";
 import { getUsePreviewWhenOpeningFileFromConfiguration } from "../utils/configuration-utils";
 
 export default class GitDiffTreeItem extends vscode.TreeItem {
   private _children: {} = {};
+  private _absolutePath: vscode.Uri;
 
   constructor(
     public readonly label: string,
@@ -16,11 +17,12 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
     this.tooltip = "Open File";
     this._children = children;
     this.resourceUri = vscode.Uri.file(this.label); // We need to set this so that the icon for the file is displayed
-    if (this._isFile()) {
+    this._absolutePath = vscode.Uri.file(getFileAbosolutePath(this.description));
+    if (this._isFile() && doesUriExist(this._absolutePath)) {
       this.command = {
         command: "vscode.open",
         title: "Open File",
-        arguments: [vscode.Uri.file(getFileAbosolutePath(this.description)), {
+        arguments: [this._absolutePath, {
           preview: getUsePreviewWhenOpeningFileFromConfiguration()
         }]
       };

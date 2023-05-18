@@ -1,17 +1,18 @@
 import path = require("path");
 import GitDiffTreeItem from "../tree-stuff/GitDiffTreeItem";
 import { TreeItemCollapsibleState } from "vscode";
+import { GitFile } from "../GitFile";
 
 /**
  * This function returns a list of files as a GitDiffTreeItem[].
  * @param files List of files to return as a GitDiffTreeItem[]
  * @returns The list of files as a GitDiffTreeItem[]
  */
-function getGitDiffList(files: string[]): GitDiffTreeItem[] {
-  return files.map((file: string) => {
-    const fileName = file.split('/').pop();
-    if (fileName) { return new GitDiffTreeItem(fileName, file); }
-    else { return new GitDiffTreeItem(file, file); }
+function getGitDiffList(files: GitFile[]): GitDiffTreeItem[] {
+  return files.map((file: GitFile) => {
+    const fileName = file.filename;
+    if (fileName) { return new GitDiffTreeItem(fileName, file.path); }
+    else { return new GitDiffTreeItem(fileName, file.path); }
   });
 }
 
@@ -20,7 +21,7 @@ function getGitDiffList(files: string[]): GitDiffTreeItem[] {
  * @param files List of files to return as a GitDiffTreeItem[], grouped by folder
  * @returns The list of files as a GitDiffTreeItem[], grouped by folder
  */
-function getGitDiffTree(files: string[]) {
+function getGitDiffTree(files: GitFile[]) {
   var tree = treeFromFilesArray(files);
   return Object.keys(tree).map((key: string) => {
     const child = tree[key as keyof Object] as any;
@@ -57,19 +58,19 @@ function getGitDiffTree(files: string[]) {
  * }
  * treeFromFilesArray(["folder1/file1", "folder1/file2", "folder2/file3"]);
  */
-function treeFromFilesArray(files: Array<string>) {
+function treeFromFilesArray(files: Array<GitFile>) {
   const tree = {};
   files.forEach(file => {
-    let parts = file.split(path.sep);
+    let parts = file.path.split(path.sep);
 
     if (parts.length === 1) {
-      parts = file.split('/');
+      parts = file.path.split('/');
     }
 
     let node: any = tree;
     parts.forEach((part, index) => {
       if (index === parts.length - 1) {
-        node[part] = { fullPath: file };
+        node[part] = { fullPath: file.path };
       } else {
         if (!node[part]) {
           node[part] = {};
@@ -87,7 +88,7 @@ function treeFromFilesArray(files: Array<string>) {
  * @param files List of files to return as a GitDiffTreeItem[] or a GitDiffTreeItem[], grouped by folder
  * @returns The list of files as a GitDiffTreeItem[] or a GitDiffTreeItem[], grouped by folder
  */
-export default function getGitDiffTreeItem(useTreeView: boolean, files: string[]) {
+export default function getGitDiffTreeItem(useTreeView: boolean, files: GitFile[]) {
   if (useTreeView) {
     return getGitDiffTree(files);
   }

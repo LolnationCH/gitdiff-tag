@@ -4,6 +4,7 @@ import { getFiles } from '../git-extension';
 import GitDiffTreeItem from './GitDiffTreeItem';
 import GitDiffTreeViewState from './GitDiffTreeViewState';
 import getGitDiffTreeItem from '../utils/utils-treeView';
+import { GitFile } from '../GitFile';
 
 export default class GitDiffTreeView implements vscode.TreeDataProvider<GitDiffTreeItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<GitDiffTreeItem | undefined> = new vscode.EventEmitter<GitDiffTreeItem | undefined>();
@@ -20,7 +21,7 @@ export default class GitDiffTreeView implements vscode.TreeDataProvider<GitDiffT
   }
 
   refreshData() {
-    getFiles().then((files: any) => {
+    getFiles().then((files: GitFile[]) => {
       this.state.files = files;
       this.refresh();
     });
