@@ -9,7 +9,8 @@ export enum GitFileState {
   copied = "Copied",
   untracked = "Untracked",
   ignored = "Ignored",
-  conflicted = "Conflicted"
+  conflicted = "Conflicted",
+  none = "None"
 }
 
 export class GitFile {
@@ -17,12 +18,41 @@ export class GitFile {
   filename: string;
   exists: boolean;
   state: GitFileState;
+  isFolder: boolean;
 
-  constructor(path: string, filename: string, exists: boolean, state: GitFileState) {
+  constructor(path: string, filename: string, exists: boolean, isFolder: boolean, state: GitFileState) {
     this.path = path;
     this.filename = filename;
     this.exists = exists;
     this.state = state;
+    this.isFolder = isFolder;
+  }
+
+  public getLabel(): string {
+    return `${this.getIcon()} ${this.filename}`;
+  }
+
+  private getIcon(): string {
+    switch (this.state) {
+      case GitFileState.modified:
+        return "Ⓜ️";
+      case GitFileState.added:
+        return "✅";
+      case GitFileState.deleted:
+        return "❌";
+      case GitFileState.renamed:
+        return "🔄";
+      case GitFileState.copied:
+        return "📝";
+      case GitFileState.untracked:
+        return "❓";
+      case GitFileState.ignored:
+        return "🙈";
+      case GitFileState.conflicted:
+        return "💔";
+      default:
+        return "";
+    }
   }
 }
 
@@ -69,5 +99,6 @@ export function getGitFile(input: string, stateInput: GitFileState | undefined =
     filename = path;
   }
   const exists = doesFileExist(path);
-  return new GitFile(path, filename, exists, state);
+  const isFolder = !exists;
+  return new GitFile(path, filename, exists, isFolder, state);
 }

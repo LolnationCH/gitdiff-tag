@@ -1,7 +1,7 @@
 import path = require("path");
 import GitDiffTreeItem from "../tree-stuff/GitDiffTreeItem";
 import { TreeItemCollapsibleState } from "vscode";
-import { GitFile } from "../GitFile";
+import { GitFile, GitFileState } from "../GitFile";
 
 /**
  * This function returns a list of files as a GitDiffTreeItem[].
@@ -9,11 +9,7 @@ import { GitFile } from "../GitFile";
  * @returns The list of files as a GitDiffTreeItem[]
  */
 function getGitDiffList(files: GitFile[]): GitDiffTreeItem[] {
-  return files.map((file: GitFile) => {
-    const fileName = file.filename;
-    if (fileName) { return new GitDiffTreeItem(fileName, file.path); }
-    else { return new GitDiffTreeItem(fileName, file.path); }
-  });
+  return files.map((file: GitFile) => new GitDiffTreeItem(file));
 }
 
 /**
@@ -25,10 +21,10 @@ function getGitDiffTree(files: GitFile[]) {
   var tree = treeFromFilesArray(files);
   return Object.keys(tree).map((key: string) => {
     const child = tree[key as keyof Object] as any;
-    if (typeof child === "object" && child.hasOwnProperty("fullPath")) {
-      return new GitDiffTreeItem(key, child.fullPath);
+    if (typeof child === "object" && child.hasOwnProperty("gitFile")) {
+      return new GitDiffTreeItem(child.gitFile);
     }
-    return new GitDiffTreeItem(key, "", tree[key as keyof Object], TreeItemCollapsibleState.Collapsed);
+    return new GitDiffTreeItem(new GitFile(key, key, false, true, GitFileState.none), tree[key as keyof Object], TreeItemCollapsibleState.Collapsed);
   });
 }
 
@@ -70,7 +66,7 @@ function treeFromFilesArray(files: Array<GitFile>) {
     let node: any = tree;
     parts.forEach((part, index) => {
       if (index === parts.length - 1) {
-        node[part] = { fullPath: file.path };
+        node[part] = { gitFile: file };
       } else {
         if (!node[part]) {
           node[part] = {};
