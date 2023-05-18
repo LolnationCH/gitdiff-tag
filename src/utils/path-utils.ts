@@ -72,3 +72,13 @@ export function hideFolderInVscode(folder: string) {
     }
   }
 }
+
+// This function does a basic check. Doesn't really check if there's no a folder name `text.txt` for example.
+export function isFile(pathItem: string) {
+  if (pathItem.split(path.sep).length === 1) {
+    return true;
+  }
+  var fullPath = getFileAbosolutePath(pathItem);
+
+  return !!path.extname(fullPath);
+}

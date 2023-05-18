@@ -1,4 +1,4 @@
-import { doesFileExist } from "./utils/path-utils";
+import { doesFileExist, isFile } from "./utils/path-utils";
 
 export enum GitFileState {
   unmodified,
@@ -99,6 +99,6 @@ export function getGitFile(input: string, stateInput: GitFileState | undefined =
     filename = path;
   }
   const exists = doesFileExist(path);
-  const isFolder = !exists;
+  const isFolder = !isFile(path);
   return new GitFile(path, filename, exists, isFolder, state);
 }

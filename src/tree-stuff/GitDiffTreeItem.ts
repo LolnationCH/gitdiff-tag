@@ -19,7 +19,11 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
     this._children = children;
     this.resourceUri = vscode.Uri.file(this.gitFile.filename); // We need to set this so that the icon for the file is displayed
     this._absolutePath = vscode.Uri.file(getFileAbosolutePath(this.gitFile.path));
-    if (this._isFile() && this.gitFile.exists) {
+
+    if (this.gitFile.isFolder) {
+      this.contextValue = "folder";
+    }
+    else if (this.gitFile.exists) {
       this.command = {
         command: "vscode.open",
         title: "Open File",
@@ -30,12 +34,8 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
       this.contextValue = "file";
     }
     else {
-      this.contextValue = "folder";
+      this.contextValue = "file_deleted";
     }
-  }
-
-  _isFile(): boolean {
-    return this.description !== "";
   }
 
   getChildren(): any[] {

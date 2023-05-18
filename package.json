@@ -117,7 +117,7 @@
         },
         {
           "command": "gitdiff-tag.viewTagFile",
-          "when": "view == gitdiff-tag && viewItem == file",
+          "when": "view == gitdiff-tag && (viewItem == file || viewItem == file_deleted)",
           "group": "3_compare"
         }
       ]
