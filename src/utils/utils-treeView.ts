@@ -3,6 +3,9 @@ import GitDiffTreeItem from "../tree-stuff/GitDiffTreeItem";
 import { TreeItemCollapsibleState } from "vscode";
 import { GitFile, GitFileState } from "../GitFile";
 
+type GitFileTree = { gitFile: GitFile };
+type Tree = { [key: string]: Tree | GitFileTree };
+
 /**
  * This function returns a list of files as a GitDiffTreeItem[].
  * @param files List of files to return as a GitDiffTreeItem[]
@@ -19,12 +22,26 @@ function getGitDiffList(files: GitFile[]): GitDiffTreeItem[] {
  */
 function getGitDiffTree(files: GitFile[]) {
   var tree = treeFromFilesArray(files);
-  return Object.keys(tree).map((key: string) => {
+  return sortTreeKeysByFolderThanByState(Object.keys(tree), tree).map((key: string) => {
     const child = tree[key as keyof Object] as any;
     if (typeof child === "object" && child.hasOwnProperty("gitFile")) {
       return new GitDiffTreeItem(child.gitFile);
     }
     return new GitDiffTreeItem(new GitFile(key, key, false, true, GitFileState.none), tree[key as keyof Object], TreeItemCollapsibleState.Collapsed);
+  });
+}
+
+function sortTreeKeysByFolderThanByState(keys: string[], tree: Tree) {
+  return keys.sort((a, b) => {
+    const aIsFolder = !tree[a as keyof Object].hasOwnProperty("gitFile");
+    const bIsFolder = !tree[b as keyof Object].hasOwnProperty("gitFile");
+    if (aIsFolder && !bIsFolder) {
+      return -1;
+    }
+    if (!aIsFolder && bIsFolder) {
+      return 1;
+    }
+    return a.localeCompare(b);
   });
 }
 

@@ -71,7 +71,15 @@ function getUntrackedFiles(): Promise<GitFile[]> {
 }
 
 function getFlatten(filesArray: GitFile[][]) {
-  return ([] as GitFile[]).concat(...filesArray);
+  var flatten = ([] as GitFile[]).concat(...filesArray);
+  // Sort by state, then by path
+  flatten.sort((a, b) => {
+    if (a.state === b.state) {
+      return a.path.localeCompare(b.path);
+    }
+    return a.state - b.state;
+  });
+  return flatten;
 }
 
 export function getFiles(): Promise<GitFile[]> {

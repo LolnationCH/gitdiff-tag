@@ -1,16 +1,16 @@
 import { doesFileExist } from "./utils/path-utils";
 
 export enum GitFileState {
-  unmodified = "Unmodified",
-  modified = "Modified",
-  added = "Added",
-  deleted = "Deleted",
-  renamed = "Renamed",
-  copied = "Copied",
-  untracked = "Untracked",
-  ignored = "Ignored",
-  conflicted = "Conflicted",
-  none = "None"
+  unmodified,
+  modified,
+  added,
+  deleted,
+  renamed,
+  copied,
+  untracked,
+  ignored,
+  conflicted,
+  none
 }
 
 export class GitFile {
