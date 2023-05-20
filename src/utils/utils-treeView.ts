@@ -27,7 +27,7 @@ function getGitDiffTree(files: GitFile[]) {
     if (typeof child === "object" && child.hasOwnProperty("gitFile")) {
       return new GitDiffTreeItem(child.gitFile);
     }
-    return new GitDiffTreeItem(new GitFile(key, key, false, true, GitFileState.none), tree[key as keyof Object], TreeItemCollapsibleState.Collapsed);
+    return new GitDiffTreeItem(new GitFile("", key, false, true, GitFileState.none), tree[key as keyof Object], TreeItemCollapsibleState.Collapsed);
   });
 }
 

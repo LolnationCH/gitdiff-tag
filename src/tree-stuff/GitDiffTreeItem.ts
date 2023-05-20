@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { getFileAbosolutePath } from "../utils/path-utils";
 import { getTreeShouldAlwaysAutoOpen, getUsePreviewWhenOpeningFileFromConfiguration } from "../utils/configuration-utils";
-import { GitFile } from "../GitFile";
+import { GitFile, GitFileState } from "../GitFile";
 
 export default class GitDiffTreeItem extends vscode.TreeItem {
   private _children: {} = {};
@@ -47,7 +47,7 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
         return new GitDiffTreeItem(child.gitFile);
       }
 
-      return new GitDiffTreeItem(this.gitFile, child, vscode.TreeItemCollapsibleState.Collapsed);
+      return new GitDiffTreeItem(new GitFile("", key, false, true, GitFileState.none), child, vscode.TreeItemCollapsibleState.Collapsed);
     });
   }
 
