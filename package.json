@@ -135,6 +135,11 @@
             "type": "boolean",
             "default": true,
             "description": "When opening a file, use the preview mode instead of the editor mode."
+          },
+          "gitdiff-tag.treeShouldAlwaysAutoOpen": {
+            "type": "boolean",
+            "default": true,
+            "description": "In tree view, controls how the folder notes are shown (collapse or open)"
           }
         }
       }

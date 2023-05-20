@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { doesUriExist, getFileAbosolutePath } from "../utils/path-utils";
-import { getUsePreviewWhenOpeningFileFromConfiguration } from "../utils/configuration-utils";
+import { getFileAbosolutePath } from "../utils/path-utils";
+import { getTreeShouldAlwaysAutoOpen, getUsePreviewWhenOpeningFileFromConfiguration } from "../utils/configuration-utils";
 import { GitFile } from "../GitFile";
 
 export default class GitDiffTreeItem extends vscode.TreeItem {
@@ -22,6 +22,7 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
 
     if (this.gitFile.isFolder) {
       this.contextValue = "folder";
+      this.collapsibleState = getTreeShouldAlwaysAutoOpen();
     }
     else if (this.gitFile.exists) {
       this.command = {
