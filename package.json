@@ -107,8 +107,14 @@
       "view/item/context": [
         {
           "command": "gitdiff-tag.openFile",
-          "when": "view == gitdiff-tag && viewItem == file",
+          "when": "view == gitdiff-tag && (viewItem != folder && viewItem != file_deleted)",
           "group": "navigation"
+        },
+        {
+          "command": "gitdiff-tag.openChanges",
+          "when": "view == gitdiff-tag && viewItem == file",
+          "icon": "$(go-to-file)",
+          "group": "inline"
         },
         {
           "command": "gitdiff-tag.openChanges",
@@ -117,7 +123,7 @@
         },
         {
           "command": "gitdiff-tag.viewTagFile",
-          "when": "view == gitdiff-tag && (viewItem == file || viewItem == file_deleted)",
+          "when": "view == gitdiff-tag && viewItem != folder",
           "group": "3_compare"
         }
       ]
@@ -140,6 +146,11 @@
             "type": "boolean",
             "default": true,
             "description": "In tree view, controls how the folder notes are shown (collapse or open)"
+          },
+          "gitdiff-tag.showStateIconInLabel": {
+            "type": "boolean",
+            "default": false,
+            "description": "Toggles the visibility of emojis that shows the state of the file. This has no effect on the tooltip."
           }
         }
       }

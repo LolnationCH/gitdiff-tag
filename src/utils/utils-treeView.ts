@@ -12,7 +12,7 @@ type Tree = { [key: string]: Tree | GitFileTree };
  * @returns The list of files as a GitDiffTreeItem[]
  */
 function getGitDiffList(files: GitFile[]): GitDiffTreeItem[] {
-  return files.map((file: GitFile) => new GitDiffTreeItem(file));
+  return files.map((file: GitFile) => new GitDiffTreeItem(file, {}, TreeItemCollapsibleState.None, true));
 }
 
 /**
