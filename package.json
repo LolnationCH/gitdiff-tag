@@ -2,7 +2,7 @@
   "name": "gitdiff-tag",
   "displayName": "gitdiff-tag",
   "description": "Shows all files changed since the last tag accesible in the current branch",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -43,7 +43,7 @@
       },
       {
         "command": "gitdiff-tag.listFiles",
-        "title": "GitDiff-tag: List Files changed since last tag",
+        "title": "GitDiff-tag: Open a file that have changed since last tag",
         "icon": "$(list-flat)"
       },
       {
@@ -107,8 +107,14 @@
       "view/item/context": [
         {
           "command": "gitdiff-tag.openFile",
-          "when": "view == gitdiff-tag && viewItem == file",
+          "when": "view == gitdiff-tag && (viewItem != folder && viewItem != file_deleted)",
           "group": "navigation"
+        },
+        {
+          "command": "gitdiff-tag.openChanges",
+          "when": "view == gitdiff-tag && viewItem == file",
+          "icon": "$(go-to-file)",
+          "group": "inline"
         },
         {
           "command": "gitdiff-tag.openChanges",
@@ -117,7 +123,7 @@
         },
         {
           "command": "gitdiff-tag.viewTagFile",
-          "when": "view == gitdiff-tag && (viewItem == file || viewItem == file_deleted)",
+          "when": "view == gitdiff-tag && (viewItem != folder && viewItem != file_added)",
           "group": "3_compare"
         }
       ]
@@ -135,6 +141,16 @@
             "type": "boolean",
             "default": true,
             "description": "When opening a file, use the preview mode instead of the editor mode."
+          },
+          "gitdiff-tag.treeShouldAlwaysAutoOpen": {
+            "type": "boolean",
+            "default": true,
+            "description": "In tree view, controls how the folder notes are shown (collapse or open)"
+          },
+          "gitdiff-tag.showStateIconInLabel": {
+            "type": "boolean",
+            "default": false,
+            "description": "Toggles the visibility of emojis that shows the state of the file. This has no effect on the tooltip."
           }
         }
       }

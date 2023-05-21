@@ -1,36 +1,23 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { hideFolderInVscode } from './path-utils';
+import { getRootPath, hideFolderInVscode } from './path-utils';
+import GitDiffTreeItem from '../tree-stuff/GitDiffTreeItem';
+import path = require('path');
 
-/**
- * This function is a wrapper to return if the file exists or not.
- * @param fileUri The file uri to check
- * @returns If the file exists or not
- */
 export function doesFileExist(fileUri: vscode.Uri) {
   return vscode.workspace.fs.stat(fileUri).then(() => true, () => false);
 }
 
-/**
- * This function is a wrapper to return the file path.
- * @param item Either a tree item or a string
- * @returns The file path of the tree item or the string
- */
-export function getFilePathFromTreeItem(item: vscode.TreeItem | string): string {
-  if (item instanceof vscode.TreeItem) {
-    return item.description as string;
+export function getFilePathFromTreeItem(item: GitDiffTreeItem | string): string {
+  if (item instanceof GitDiffTreeItem) {
+    return item.absolutePath.fsPath.replace(getRootPath(), "").replace(path.sep, "");
   }
   return item;
 }
 
-/**
- * This function is a wrapper to return the file name.
- * @param item Either a tree item or a string
- * @returns The file name of the tree item or the string
- */
-export function getFileLabelFromTreeItem(item: vscode.TreeItem | string): string {
-  if (item instanceof vscode.TreeItem) {
-    return item.label as string;
+export function getFileLabelFromTreeItem(item: GitDiffTreeItem | string): string {
+  if (item instanceof GitDiffTreeItem) {
+    return item.gitFile.filename;
   }
   return item;
 }
