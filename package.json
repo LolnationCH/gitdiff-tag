@@ -2,7 +2,7 @@
   "name": "gitdiff-tag",
   "displayName": "gitdiff-tag",
   "description": "Shows all files changed since the last tag accesible in the current branch",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -43,7 +43,7 @@
       },
       {
         "command": "gitdiff-tag.listFiles",
-        "title": "GitDiff-tag: List Files changed since last tag",
+        "title": "GitDiff-tag: Open a file that have changed since last tag",
         "icon": "$(list-flat)"
       },
       {
@@ -123,7 +123,7 @@
         },
         {
           "command": "gitdiff-tag.viewTagFile",
-          "when": "view == gitdiff-tag && viewItem != folder",
+          "when": "view == gitdiff-tag && (viewItem != folder && viewItem != file_added)",
           "group": "3_compare"
         }
       ]

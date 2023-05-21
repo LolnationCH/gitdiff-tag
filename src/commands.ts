@@ -9,7 +9,7 @@ import { getFiles } from './git-extension';
 import CacheUtils from './utils/cache-utils';
 import { getFileAbosolutePath } from './utils/path-utils';
 import { getUsePreviewWhenOpeningFileFromConfiguration } from './utils/configuration-utils';
-import { GitFile } from './GitFile';
+import { GitFile, GitFileState } from './GitFile';
 
 /**
  * This function opens the changes of a file in the diff editor.
@@ -37,7 +37,7 @@ export function openChanges(file: string | GitDiffTreeItem) {
  */
 export function listFilesAndOpenSelected() {
   getFiles().then((files: GitFile[]) => {
-    vscode.window.showQuickPick(files.map((x) => (x.path))).then((file) => {
+    vscode.window.showQuickPick(files.filter(x => x.state !== GitFileState.deleted).map((x) => (x.path))).then((file) => {
       if (file) {
         vscode.workspace.openTextDocument(getFileAbosolutePath(file)).then((doc) => {
           vscode.window.showTextDocument(doc, { preview: getUsePreviewWhenOpeningFileFromConfiguration() });
