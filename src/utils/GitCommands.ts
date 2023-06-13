@@ -30,7 +30,7 @@ export default abstract class GitCommands {
 
   static getFileContentFromTagCommand(tag: string, file: string): GitCommand {
     return {
-      command: `git show ${tag}:${file}`,
+      command: `git show ${tag}:${file.replace(/\\/g, "/")}`,
       options: { cwd: getRootPath() },
     };
   }
