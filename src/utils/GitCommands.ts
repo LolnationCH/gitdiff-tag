@@ -35,6 +35,13 @@ export default abstract class GitCommands {
     };
   }
 
+  static launchDiffToolCommand(tag: string, file: string): GitCommand {
+    return {
+      command: `git difftool -y -x "code --wait --diff" ${tag} -- ${file.replace(/\\/g, "/")}`,
+      options: { cwd: getRootPath() },
+    };
+  }
+
   static getGenericOptions(): cp.ExecOptions {
     return { cwd: getRootPath() };
   }

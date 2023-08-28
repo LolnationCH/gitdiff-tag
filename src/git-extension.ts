@@ -37,6 +37,10 @@ export function getFileContentFromTag(tag: string, fileName: string): Promise<st
   });
 }
 
+export function launchDiffToolCommand(tag: string, fileName: string) {
+  cp.exec(GitCommands.launchDiffToolCommand(tag, fileName).command, GitCommands.getGenericOptions());
+}
+
 function getDiffTrackedFiles(): Promise<GitFile[]> {
   return new Promise<GitFile[]>((resolve, reject) => {
     getTag().then((tag) => {
