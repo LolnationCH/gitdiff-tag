@@ -51,9 +51,7 @@ export default abstract class CacheUtils {
   private static downloadFile(tag: string, file: string) {
     createHidenFolder(this.cacheDirectory);
 
-    return getFileContentFromTag(tag, file)
-      .then((content) => {
-        return vscode.workspace.fs.writeFile(CacheUtils.getUriForCacheFile(file, tag), new TextEncoder().encode(content));
-      });
+    const dest = CacheUtils.getUriForCacheFile(file, tag);
+    return getFileContentFromTag(tag, file, dest);
   }
 }
