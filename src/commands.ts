@@ -74,3 +74,17 @@ export function openCacheFile(file: string | GitDiffTreeItem) {
 export function clearCache() {
   CacheUtils.clearCache();
 }
+
+export function revertFileToTag(file: string | GitDiffTreeItem): any {
+  const fileFullPath = getFilePathFromTreeItem(file);
+
+  if (fileFullPath !== "") {
+    CacheUtils.getFileTagInformation(fileFullPath).then((uriNTag) => {
+      if (uriNTag) {
+        vscode.workspace.fs.readFile(uriNTag.uri).then((buffer) => {
+          vscode.workspace.fs.writeFile(vscode.Uri.file(getFileAbosolutePath(fileFullPath)), buffer);
+        });
+      }
+    });
+  }
+}

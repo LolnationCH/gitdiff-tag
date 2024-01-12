@@ -2,7 +2,7 @@
   "name": "gitdiff-tag",
   "displayName": "gitdiff-tag",
   "description": "Shows all files changed since the last tag accesible in the current branch",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -35,6 +35,11 @@
         "command": "gitdiff-tag.viewTagFile",
         "title": "View file at tag state",
         "icon": "$(go-to-file)"
+      },
+      {
+        "command": "gitdiff-tag.revertFile",
+        "title": "Revert File to tag",
+        "icon": "$(notebook-revert)"
       },
       {
         "command": "gitdiff-tag.clearCache",
@@ -73,6 +78,10 @@
         },
         {
           "command": "gitdiff-tag.openChanges",
+          "when": "false"
+        },
+        {
+          "command": "gitdiff-tag.revertFile",
           "when": "false"
         },
         {
@@ -123,6 +132,11 @@
         },
         {
           "command": "gitdiff-tag.viewTagFile",
+          "when": "view == gitdiff-tag && (viewItem != folder && viewItem != file_added)",
+          "group": "3_compare"
+        },
+        {
+          "command": "gitdiff-tag.revertFile",
           "when": "view == gitdiff-tag && (viewItem != folder && viewItem != file_added)",
           "group": "3_compare"
         }
