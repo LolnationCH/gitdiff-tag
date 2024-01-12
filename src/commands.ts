@@ -2,7 +2,8 @@ import * as vscode from 'vscode';
 
 import GitDiffTreeItem from "./tree-stuff/GitDiffTreeItem";
 import {
-  getFilePathFromTreeItem
+  getFilePathFromTreeItem,
+  getFileLabelFromTreeItem
 } from "./utils/utils";
 import { getFiles, launchDiffToolCommand } from './git-extension';
 import CacheUtils from './utils/cache-utils';
@@ -17,10 +18,15 @@ import { GitFile, GitFileState } from './GitFile';
  */
 export function openChanges(file: string | GitDiffTreeItem) {
   const fileFullPath = getFilePathFromTreeItem(file);
+  const fileLabel = getFileLabelFromTreeItem(file);
+
   if (fileFullPath !== "") {
     CacheUtils.getFileTagInformation(fileFullPath).then((uriNTag) => {
       if (uriNTag) {
-        launchDiffToolCommand(uriNTag.tag, fileFullPath);
+        vscode.commands.executeCommand("vscode.diff",
+          uriNTag.uri,
+          vscode.Uri.file(getFileAbosolutePath(fileFullPath)),
+          `${fileLabel} (Working Tree) ↔ ${fileLabel} (Tag: ${uriNTag.tag})`);
       }
     });
   }
@@ -67,4 +73,18 @@ export function openCacheFile(file: string | GitDiffTreeItem) {
 
 export function clearCache() {
   CacheUtils.clearCache();
+}
+
+export function revertFileToTag(file: string | GitDiffTreeItem): any {
+  const fileFullPath = getFilePathFromTreeItem(file);
+
+  if (fileFullPath !== "") {
+    CacheUtils.getFileTagInformation(fileFullPath).then((uriNTag) => {
+      if (uriNTag) {
+        vscode.workspace.fs.readFile(uriNTag.uri).then((buffer) => {
+          vscode.workspace.fs.writeFile(vscode.Uri.file(getFileAbosolutePath(fileFullPath)), buffer);
+        });
+      }
+    });
+  }
 }

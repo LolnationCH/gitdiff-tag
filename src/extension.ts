@@ -24,6 +24,9 @@ export function activate(context: vscode.ExtensionContext) {
     disposable = vscode.commands.registerCommand('gitdiff-tag.openChanges', file => commands.openChanges(file));
     context.subscriptions.push(disposable);
 
+    disposable = vscode.commands.registerCommand('gitdiff-tag.revertFile', file => commands.revertFileToTag(file));
+    context.subscriptions.push(disposable);
+
     // Command that refreshes the tree view
     disposable = vscode.commands.registerCommand('gitdiff-tag.refresh', () => treeDataProvider.refreshData());
     context.subscriptions.push(disposable);

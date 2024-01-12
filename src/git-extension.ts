@@ -1,5 +1,7 @@
 import * as cp from 'child_process';
 import * as vscode from 'vscode';
+import * as fs from "fs/promises";
+import * as path from "path";
 
 import GitCommands from './utils/GitCommands';
 import { getTagToUseFromConfiguration } from './utils/configuration-utils';
@@ -24,9 +26,11 @@ export function getTag(): Promise<string> {
   });
 }
 
-export function getFileContentFromTag(tag: string, fileName: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    cp.exec(GitCommands.getFileContentFromTagCommand(tag, fileName).command, GitCommands.getGenericOptions(),
+export function getFileContentFromTag(tag: string, fileName: string, dest: vscode.Uri): Promise<string> {
+  return new Promise(async (resolve, reject) => {
+    await fs.mkdir(path.dirname(dest.fsPath), { recursive: true });
+
+    cp.exec(GitCommands.getFileContentFromTagCommand(tag, fileName, dest.fsPath).command, GitCommands.getGenericOptions(),
       (err, stdout, _) => {
         if (err) {
           reject(err);
