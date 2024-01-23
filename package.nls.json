@@ -1,0 +1,15 @@
+{
+  "listFiles.title": "GitDiff-tag: Open a file that have changed since last tag",
+  "openFile.title": "Open file",
+  "openChanges.title": "Open Changes",
+  "viewTagFile.title": "View file at tag state",
+  "revertFile.title": "Revert File to tag",
+  "clearCache.title": "Clear Cache",
+  "refresh.title": "Refresh list of files modified",
+  "toggleTree.title": "Toggle tree",
+  "scm.name.title": "GitDiff - Diff from tag",
+  "configuration.useTag.description": "Tag to use when doing the comparaison. If not set, the last tag will be used.",
+  "configuration.usePreviewWhenOpeningFile.description": "When opening a file, use the preview mode instead of the editor mode.",
+  "configuration.treeShouldAlwaysAutoOpen.description": "In tree view, controls how the folder notes are shown (collapse or open)",
+  "configuration.showStateIconInLabel.description": "Toggles the visibility of emojis that shows the state of the file. This has no effect on the tooltip."
+}

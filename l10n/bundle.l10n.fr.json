@@ -1,0 +1,19 @@
+{
+  "Are you sure you want to revert the file to the tag?": "Êtes-vous sûr de vouloir rétablir le fichier au Tag ?",
+  "(Working Tree)": "(Arborescence de travail)",
+  "unmodified": "non-modifié",
+  "modified": "modifié",
+  "added": "ajouté",
+  "deleted": "supprimé",
+  "renamed": "renommer",
+  "copied": "copié",
+  "untracked": "non-suivi",
+  "ignored": "ignoré",
+  "conflicted": "en conflit",
+  "none": "aucun",
+  "Open File": "Ouvrir le fichier",
+  "File \"{file}\" exists on disk, but not in the current tag. This is generally due that it is a new file.": "Le fichier \"{file}\" existe sur le disque, mais pas dans le tag actuel. Cela est généralement dû au fait que c'est un nouveau fichier.",
+  "Yes": "Oui",
+  "No": "Non",
+  "Cancel": "Annuler"
+}

@@ -41,7 +41,7 @@ export default class GitDiffTreeItem extends vscode.TreeItem {
     else if (this.gitFile.exists) {
       return {
         command: "vscode.open",
-        title: "Open File",
+        title: vscode.l10n.t("Open File"),
         arguments: [this.absolutePath, {
           preview: getUsePreviewWhenOpeningFileFromConfiguration()
         }]

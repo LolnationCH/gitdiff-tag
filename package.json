@@ -2,7 +2,7 @@
   "name": "gitdiff-tag",
   "displayName": "gitdiff-tag",
   "description": "Shows all files changed since the last tag accesible in the current branch",
-  "version": "3.0.0",
+  "version": "3.5.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -19,46 +19,47 @@
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
+  "l10n": "./l10n",
   "contributes": {
     "commands": [
       {
         "command": "gitdiff-tag.openFile",
-        "title": "Open file",
+        "title": "%openFile.title%",
         "icon": "$(go-to-file)"
       },
       {
         "command": "gitdiff-tag.openChanges",
-        "title": "Open Changes",
+        "title": "%openChanges.title%",
         "icon": "$(go-to-file)"
       },
       {
         "command": "gitdiff-tag.viewTagFile",
-        "title": "View file at tag state",
+        "title": "%viewTagFile.title%",
         "icon": "$(go-to-file)"
       },
       {
         "command": "gitdiff-tag.revertFile",
-        "title": "Revert File to tag",
+        "title": "%revertFile.title%",
         "icon": "$(notebook-revert)"
       },
       {
         "command": "gitdiff-tag.clearCache",
-        "title": "Clear Cache",
+        "title": "%clearCache.title%",
         "icon": "$(notebook-delete-cell)"
       },
       {
         "command": "gitdiff-tag.listFiles",
-        "title": "GitDiff-tag: Open a file that have changed since last tag",
+        "title": "%listFiles.title%",
         "icon": "$(list-flat)"
       },
       {
         "command": "gitdiff-tag.refresh",
-        "title": "Refresh list of files modified",
+        "title": "%refresh.title%",
         "icon": "$(extensions-refresh)"
       },
       {
         "command": "gitdiff-tag.toggleTree",
-        "title": "Toggle tree",
+        "title": "%toggleTree.title%",
         "icon": "$(testing-show-as-list-icon)"
       }
     ],
@@ -66,7 +67,7 @@
       "scm": [
         {
           "id": "gitdiff-tag",
-          "name": "GitDiff - Diff from tag"
+          "name": "%scm.name.title%"
         }
       ]
     },
@@ -149,22 +150,22 @@
           "gitdiff-tag.useTag": {
             "type": "string",
             "default": null,
-            "description": "Tag to use when doing the comparaison. If not set, the last tag will be used."
+            "description": "%configuration.useTag.description%"
           },
           "gitdiff-tag.usePreviewWhenOpeningFile": {
             "type": "boolean",
             "default": true,
-            "description": "When opening a file, use the preview mode instead of the editor mode."
+            "description": "%configuration.usePreviewWhenOpeningFile.description%"
           },
           "gitdiff-tag.treeShouldAlwaysAutoOpen": {
             "type": "boolean",
             "default": true,
-            "description": "In tree view, controls how the folder notes are shown (collapse or open)"
+            "description": "%configuration.treeShouldAlwaysAutoOpen.description%"
           },
           "gitdiff-tag.showStateIconInLabel": {
             "type": "boolean",
             "default": false,
-            "description": "Toggles the visibility of emojis that shows the state of the file. This has no effect on the tooltip."
+            "description": "%configuration.showStateIconInLabel.description%"
           }
         }
       }
@@ -195,6 +196,10 @@
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
     "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "webpack-cli": "^5.0.1",
+    "@vscode/l10n": "^0.0.18"
+  },
+  "dependencies": {
+    "@vscode/l10n": "^0.0.18"
   }
 }

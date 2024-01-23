@@ -1,6 +1,7 @@
 import { MarkdownString } from "vscode";
 import { doesFileExist, isFile } from "./utils/path-utils";
 import { getShowStateIconInLabel } from "./utils/configuration-utils";
+import { l10n } from "vscode";
 
 export enum GitFileState {
   unmodified,
@@ -41,6 +42,10 @@ const emojiGitFileState = {
   [GitFileState.none]: ""
 };
 
+function getStatusStr(state: GitFileState): string {
+  return l10n.t(`${GitFileState[state]}`);
+}
+
 export class GitFile {
   path: string;
   filename: string;
@@ -61,16 +66,13 @@ export class GitFile {
   }
 
   public getToolTip(): MarkdownString {
-    const status = GitFileState[this.state][0].toUpperCase();
-    const color = colorGitFileState[this.state];
-
     var mark = new MarkdownString(`**${this.path}** - ${this.getColoredState()}`);
     mark.isTrusted = true;
     return mark;
   }
 
   private getColoredState(): string {
-    const status = GitFileState[this.state];
+    const status = getStatusStr(this.state);
     const color = colorGitFileState[this.state];
     return `**<span style="color:${color};">${status}</span>**`;
   }
