@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { getRootPath, doesUriExist } from './path-utils';
+import { getRootPath, doesUriExist, getFileAbosolutePath } from './path-utils';
 import { getFileContentFromTag, getTag } from '../git-extension';
-import { TextEncoder } from 'util';
 import { createHidenFolder } from './utils';
 
 interface FileTagInformation {
@@ -39,7 +38,9 @@ export default abstract class CacheUtils {
         })
         .catch(err => {
           if (err.message.includes("exists on disk")) {
-            vscode.window.showWarningMessage(`File ${file} exists on disk, but not in the current tag. This is generally due that it is a new file.`);
+            const errorMessage = "File \"{file}\" exists on disk, but not in the current tag. This is generally due that it is a new file.";
+            const l10nmsg = vscode.l10n.t(errorMessage, { file });
+            vscode.window.showWarningMessage(l10nmsg);
           }
           else {
             vscode.window.showErrorMessage(`${err}`);
@@ -53,5 +54,19 @@ export default abstract class CacheUtils {
 
     const dest = CacheUtils.getUriForCacheFile(file, tag);
     return getFileContentFromTag(tag, file, dest);
+  }
+
+  public static revertFileToTag(fileFullPath: string) {
+    if (fileFullPath === "") {
+      return;
+    }
+
+    this.getFileTagInformation(fileFullPath).then((uriNTag) => {
+      if (uriNTag) {
+        vscode.workspace.fs.readFile(uriNTag.uri).then((buffer) => {
+          vscode.workspace.fs.writeFile(vscode.Uri.file(getFileAbosolutePath(fileFullPath)), buffer);
+        });
+      }
+    });
   }
 }

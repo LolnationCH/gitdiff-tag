@@ -1,0 +1,15 @@
+{
+  "listFiles.title": "GitDiff-tag: Ouvrir un fichier qui a changé depuis la dernière balise",
+  "openFile.title": "Ouvrir le fichier",
+  "openChanges.title": "Ouvrir le différentiel de changements",
+  "viewTagFile.title": "Voir le fichier à l'état du Tag",
+  "revertFile.title": "Rétablir le fichier au Tag",
+  "clearCache.title": "Effacer la cache",
+  "refresh.title": "Rafraîchir la liste des fichiers modifiés",
+  "toggleTree.title": "Basculer l'arbre",
+  "scm.name.title": "GitDiff - Différentiel du tag",
+  "configuration.useTag.description": "Tag à utiliser lors de la comparaison. Si non défini, le dernier Tag sera utilisée.",
+  "configuration.usePreviewWhenOpeningFile.description": "Lors de l'ouverture d'un fichier, utiliser le mode aperçu au lieu du mode éditeur.",
+  "configuration.treeShouldAlwaysAutoOpen.description": "Dans la vue en arbre, contrôle comment les noeuds de dossier sont affichées (arbre ou liste)",
+  "configuration.showStateIconInLabel.description": "Bascule la visibilité des emojis qui montrent l'état du fichier. Cela n'a aucun effet sur l'infobulle."
+}

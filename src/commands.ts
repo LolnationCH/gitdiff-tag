@@ -5,7 +5,7 @@ import {
   getFilePathFromTreeItem,
   getFileLabelFromTreeItem
 } from "./utils/utils";
-import { getFiles, launchDiffToolCommand } from './git-extension';
+import { getFiles } from './git-extension';
 import CacheUtils from './utils/cache-utils';
 import { getFileAbosolutePath } from './utils/path-utils';
 import { getUsePreviewWhenOpeningFileFromConfiguration } from './utils/configuration-utils';
@@ -20,13 +20,15 @@ export function openChanges(file: string | GitDiffTreeItem) {
   const fileFullPath = getFilePathFromTreeItem(file);
   const fileLabel = getFileLabelFromTreeItem(file);
 
+
   if (fileFullPath !== "") {
     CacheUtils.getFileTagInformation(fileFullPath).then((uriNTag) => {
       if (uriNTag) {
+        const workingTreeStr = vscode.l10n.t("(Working Tree)");
         vscode.commands.executeCommand("vscode.diff",
           uriNTag.uri,
           vscode.Uri.file(getFileAbosolutePath(fileFullPath)),
-          `${fileLabel} (Working Tree) ↔ ${fileLabel} (Tag: ${uriNTag.tag})`);
+          `${fileLabel} ${workingTreeStr} ↔ ${fileLabel} (Tag: ${uriNTag.tag})`);
       }
     });
   }
@@ -78,13 +80,12 @@ export function clearCache() {
 export function revertFileToTag(file: string | GitDiffTreeItem): any {
   const fileFullPath = getFilePathFromTreeItem(file);
 
-  if (fileFullPath !== "") {
-    CacheUtils.getFileTagInformation(fileFullPath).then((uriNTag) => {
-      if (uriNTag) {
-        vscode.workspace.fs.readFile(uriNTag.uri).then((buffer) => {
-          vscode.workspace.fs.writeFile(vscode.Uri.file(getFileAbosolutePath(fileFullPath)), buffer);
-        });
-      }
-    });
-  }
+  const question = vscode.l10n.t("Are you sure you want to revert the file to the tag?");
+  const answerYes = vscode.l10n.t("Yes");
+
+  vscode.window.showInformationMessage(question, { modal: true }, answerYes).then((answer) => {
+    if (answer === answerYes) {
+      CacheUtils.revertFileToTag(fileFullPath);
+    }
+  });
 }

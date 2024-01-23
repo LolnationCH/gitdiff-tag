@@ -62,7 +62,6 @@ function getDiffTrackedFiles(): Promise<GitFile[]> {
   });
 }
 
-
 function getUntrackedFiles(): Promise<GitFile[]> {
   return new Promise<GitFile[]>((resolve, reject) => {
     cp.exec(GitCommands.getUntrackedFilesCommand().command, GitCommands.getGenericOptions(),
